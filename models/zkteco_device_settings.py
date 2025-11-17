@@ -6,6 +6,7 @@
 ########################################################
 
 import base64
+import unicodedata
 from odoo import api, fields, models, _
 from collections import defaultdict
 from odoo.addons.base.models.res_partner import _tz_get
@@ -212,6 +213,17 @@ class ZktecoDeviceSetting(models.Model):
                 f"An unexpected error occurred while connecting to the device: {connection_exception}"
             ))
 
+    # Customized by Tunn
+    # Function to remove accents from Vietnamese text (Tránh lỗi khi đồng bộ tên nhân viên có dấu)
+    def _remove_accents(self, text):
+        """
+        Convert Vietnamese accented text into ASCII (no accents)
+        """
+        if not text:
+            return ''
+        text = unicodedata.normalize('NFKD', text)
+        return ''.join([c for c in text if not unicodedata.combining(c)])
+
     def action_synchronize_employees(self):
 
         max_uid = 0
@@ -283,8 +295,13 @@ class ZktecoDeviceSetting(models.Model):
                         'device_id': self.id,
                     })]
 
+                    # zk_device.set_user(
+                    #     max_uid, employee.name, 0, '', '', str(next_user_id_str)
+                    # )
+
+                    device_username = self._remove_accents(employee.name)
                     zk_device.set_user(
-                        max_uid, employee.name, 0, '', '', str(next_user_id_str)
+                        max_uid, device_username, 0, '', '', str(next_user_id_str)
                     )
 
                     next_user_id_str = generate_next_user_id(next_user_id_str)
