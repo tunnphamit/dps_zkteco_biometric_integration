@@ -289,21 +289,41 @@ class ZktecoDeviceSetting(models.Model):
 
                 if not biometric_device_record:
                     max_uid += 1
-                    employee.biometric_device_ids = [(0, 0, {
-                        'employee_id': employee.id,
-                        'zkteco_device_attend_id': next_user_id_str,
-                        'device_id': self.id,
-                    })]
+                    # employee.biometric_device_ids = [(0, 0, {
+                    #     'employee_id': employee.id,
+                    #     'zkteco_device_attend_id': next_user_id_str,
+                    #     'device_id': self.id,
+                    # })]
+
 
                     # zk_device.set_user(
                     #     max_uid, employee.name, 0, '', '', str(next_user_id_str)
                     # )
+                    
+                    # Customized by Tunn (Optimized)
+                    employee_code = employee.identification_id or str(employee.id)
 
-                    device_username = self._remove_accents(employee.name)
+                    # Chuẩn hóa username: bỏ dấu + thay khoảng trắng = _
+                    device_username = self._remove_accents(employee.name).replace(" ", "_")
+
+                    # Lưu vào Odoo
+                    employee.biometric_device_ids = [(0, 0, {
+                        'employee_id': employee.id,
+                        'zkteco_device_attend_id': employee_code,
+                        'zkteco_device_username': device_username,
+                        'device_id': self.id,
+                    })]
+
+                    # Đẩy lên máy chấm công
                     zk_device.set_user(
-                        max_uid, device_username, 0, '', '', str(next_user_id_str)
+                        int(employee_code),    # uid
+                        device_username,       # name trên máy
+                        0,                     # privilege
+                        '',                    # password
+                        '',                    # card
+                        employee_code          # user_id (PIN)
                     )
-
+                                        
                     next_user_id_str = generate_next_user_id(next_user_id_str)
 
             return {
