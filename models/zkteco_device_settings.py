@@ -226,11 +226,15 @@ class ZktecoDeviceSetting(models.Model):
         text = unicodedata.normalize('NFKD', text)
         text = ''.join([c for c in text if not unicodedata.combining(c)])
 
-        # Remove all spaces
-        text = re.sub(r'\s+', '', text)
+        # Normalize spaces (remove multiple spaces)
+        text = text.strip()
+        text = re.sub(r'\s+', ' ', text)
 
-        # Optional: convert to uppercase to avoid lỗi trên thiết bị
-        text = text.upper()
+        # Lower-case first, then capitalize each word
+        text = text.lower().title()
+
+        # Remove all spaces between words
+        text = text.replace(' ', '')
 
         return text
 
