@@ -316,7 +316,7 @@ class ZktecoDeviceSetting(models.Model):
 
                     # Đẩy lên máy chấm công
                     zk_device.set_user(
-                        int(employee_code),    # uid
+                        max_uid,    # uid
                         device_username,       # name trên máy
                         0,                     # privilege
                         '',                    # password
