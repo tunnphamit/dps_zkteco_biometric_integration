@@ -304,7 +304,7 @@ class ZktecoDeviceSetting(models.Model):
                     employee_code = employee.identification_id or str(employee.id)
 
                     # Chuẩn hóa username: bỏ dấu + thay khoảng trắng = _
-                    device_username = self._remove_accents(employee.name).replace(" ", "_")
+                    device_username = self._remove_accents(employee.name).replace(" ", "")
 
                     # Lưu vào Odoo
                     employee.biometric_device_ids = [(0, 0, {
