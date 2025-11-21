@@ -579,14 +579,14 @@ class ZktecoDeviceSetting(models.Model):
             punch_number = line_values[3]
             punch_status_code = int(line_values[4])
 
-            device_user_record = self.env['zkteco.attendance.machine'].sudo().search([
-                ('zkteco_device_attend_id', '=', device_user_id)
-            ])
-            if not device_user_record:
-                device_user_record = self.env['zkteco.attendance.machine'].sudo().create({
-                    'zkteco_device_attend_id': device_user_id,
-                    'device_id': self.id
-                })
+            # device_user_record = self.env['zkteco.attendance.machine'].sudo().search([
+            #     ('zkteco_device_attend_id', '=', device_user_id)
+            # ])
+            # if not device_user_record:
+            #     device_user_record = self.env['zkteco.attendance.machine'].sudo().create({
+            #         'zkteco_device_attend_id': device_user_id,
+            #         'device_id': self.id
+            #     })
 
             local_datetime = datetime.strptime(f"{punch_date} {punch_time}", "%Y-%m-%d %H:%M:%S")
             local_tz = pytz.timezone(self.time_zone)
