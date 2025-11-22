@@ -579,9 +579,15 @@ class ZktecoDeviceSetting(models.Model):
             punch_number = line_values[3]
             punch_status_code = int(line_values[4])
 
+            # Customized by Tunn
+            # device_user_record = self.env['zkteco.attendance.machine'].sudo().search([
+            #     ('zkteco_device_attend_id', '=', device_user_id)
+            # ])
             device_user_record = self.env['zkteco.attendance.machine'].sudo().search([
-                ('zkteco_device_attend_id', '=', device_user_id)
-            ])
+                ('zkteco_device_attend_id', '=', device_user_id),
+                ('device_id', '=', self.id)
+            ], limit=1)
+
             if not device_user_record:
                 device_user_record = self.env['zkteco.attendance.machine'].sudo().create({
                     'zkteco_device_attend_id': device_user_id,
@@ -595,10 +601,15 @@ class ZktecoDeviceSetting(models.Model):
             timestamp = local_datetime.timestamp()
             formatted_utc_datetime = utc_datetime.strftime('%Y-%m-%d %H:%M:%S')
 
+            # Customized by Tunn
+            # existing_log = self.env['zkteco.device.logs'].sudo().search([
+            #     ('zketco_duser_id', '=', device_user_record.id),
+            #     ('timestamp', '=', timestamp)
+            # ])
             existing_log = self.env['zkteco.device.logs'].sudo().search([
                 ('zketco_duser_id', '=', device_user_record.id),
                 ('timestamp', '=', timestamp)
-            ])
+            ], limit=1)
 
             state_record = self.env['zkteco.device.states'].search([
                 ('code', '=', punch_status_code),
@@ -634,10 +645,17 @@ class ZktecoDeviceSetting(models.Model):
         fingerprint_template = values[5].split('=')[1]
 
         fixed_template = self._base64_fix_padding(fingerprint_template)
+        
+        # Customized by Tunn
+        # db_user_device = self.env['zkteco.attendance.machine'].sudo().search(
+        #     [('zkteco_device_attend_id', '=', user_device_id)]
+        # )
+        db_user_device = self.env['zkteco.attendance.machine'].sudo().search([
+            ('zkteco_device_attend_id', '=', user_device_id),
+            ('device_id', '=', self.id)
+        ], limit=1)
 
-        db_user_device = self.env['zkteco.attendance.machine'].sudo().search(
-            [('zkteco_device_attend_id', '=', user_device_id)]
-        )
+
         if not db_user_device:
             db_user_device = self.env['zkteco.attendance.machine'].sudo().create({
                 'zkteco_device_attend_id': user_device_id,
