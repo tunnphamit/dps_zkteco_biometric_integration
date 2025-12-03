@@ -48,6 +48,7 @@
         <field name="model">zkteco.device.logs</field>
         <field name="arch" type="xml">
             <list string="ZKTeco Device Attendance Logs" create="false">
+                <field name="employee_code"/>
                 <field name="employee_id"/>
                 <field name="user_punch_time"/>
                 <field name="status"/>

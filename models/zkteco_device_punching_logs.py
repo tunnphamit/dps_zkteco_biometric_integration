@@ -64,6 +64,11 @@ class ZktecoDeviceLogs(models.Model):
         store=True,
         help="Employee linked to this device user."
     )
+    employee_code = fields.Char(
+        string='Employee Code',
+        related='zketco_duser_id.employee_id.x_studio_m_nhn_vin',
+        help="Code of the employee fetched from the linked employee record."
+    )
     employee_name = fields.Char(
         string='Employee Name',
         related='zketco_duser_id.employee_id.name',
