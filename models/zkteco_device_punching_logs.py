@@ -64,11 +64,25 @@ class ZktecoDeviceLogs(models.Model):
         store=True,
         help="Employee linked to this device user."
     )
+
+    # Customized by Tunn
     employee_code = fields.Char(
         string='Employee Code',
         related='zketco_duser_id.employee_id.x_studio_m_nhn_vin',
         help="Code of the employee fetched from the linked employee record."
     )
+    employee_department = fields.Char(
+        string='Department',
+        related='zketco_duser_id.employee_id.department_id.name',
+        help="Department of the employee fetched from the linked employee record."
+    )
+    weekday_name = fields.Char(
+        string="Weekday",
+        compute="_compute_weekday_name",
+        store=True
+    )
+
+
     employee_name = fields.Char(
         string='Employee Name',
         related='zketco_duser_id.employee_id.name',
@@ -137,6 +151,18 @@ class ZktecoDeviceLogs(models.Model):
 
         return record
 
+    # Customized by Tunn
+    @api.depends('user_punch_time')
+    def _compute_weekday_name(self):
+        weekdays = [
+            "Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm",
+            "Thứ Sáu", "Thứ Bảy", "Chủ Nhật"
+        ]
+        for rec in self:
+            if rec.user_punch_time:
+                rec.weekday_name = weekdays[rec.user_punch_time.weekday()]
+            else:
+                rec.weekday_name = False
 
 class HrAttendance(models.Model):
     _inherit = "hr.attendance"
