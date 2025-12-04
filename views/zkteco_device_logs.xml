@@ -51,6 +51,8 @@
                 <field name="employee_code"/>
                 <field name="employee_id"/>
                 <field name="user_punch_time"/>
+                <field name="weekday_name"/>
+                <field name="employee_department"/>
                 <field name="status"/>
                 <field name="device"/>
                 <field name="company_id"/>
